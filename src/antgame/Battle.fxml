@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.effect.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" styleClass="frame" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="antgame.Controller">
+    <stylesheets>
+        <URL value="@fxml.css" />
+    </stylesheets>
+   <children>
+      <AnchorPane layoutX="1328.0" layoutY="825.0" prefHeight="200.0" prefWidth="578.0">
+         <children>
+            <Label alignment="CENTER" layoutX="9.0" layoutY="5.0" prefHeight="53.0" prefWidth="561.0" styleClass="antStats" text="Ants Left:" textFill="WHITE" />
+            <Label alignment="CENTER" layoutX="9.0" layoutY="65.0" prefHeight="53.0" prefWidth="561.0" styleClass="antStats" text="Score:" textFill="WHITE" />
+            <Label alignment="CENTER" layoutX="9.0" layoutY="125.0" prefHeight="53.0" prefWidth="561.0" styleClass="antStats" text="Kills:" textFill="WHITE" />
+            <Label alignment="CENTER" layoutX="9.0" layoutY="185.0" prefHeight="53.0" prefWidth="561.0" styleClass="antStats" text="Deaths:" textFill="WHITE" />
+         </children>
+      </AnchorPane>
+      <Label alignment="CENTER" layoutX="40.0" layoutY="765.0" prefHeight="53.0" prefWidth="110.0" text="RED" textAlignment="CENTER" textFill="RED">
+         <font>
+            <Font name="Andalus" size="24.0" />
+         </font>
+      </Label>
+      <Label alignment="CENTER" layoutX="1350.0" layoutY="765.0" prefHeight="53.0" prefWidth="123.0" text="BLACK" textAlignment="CENTER" textFill="BLUE">
+         <font>
+            <Font name="Andalus" size="24.0" />
+         </font>
+      </Label>
+      <AnchorPane layoutX="20.0" layoutY="825.0" prefHeight="253.0" prefWidth="578.0">
+         <children>
+            <Label alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" layoutX="9.0" layoutY="5.0" prefHeight="53.0" prefWidth="561.0" styleClass="antStats" stylesheets="@fxml.css" text="Ants Left:" textAlignment="CENTER" textFill="WHITE" />
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="9.0" layoutY="65.0" prefHeight="53.0" prefWidth="561.0" styleClass="antStats" text="Score:" textFill="WHITE" />
+            <Label alignment="CENTER" layoutX="9.0" layoutY="125.0" prefHeight="53.0" prefWidth="561.0" styleClass="antStats" text="Kills:" textFill="WHITE" />
+            <Label alignment="CENTER" layoutX="9.0" layoutY="185.0" prefHeight="53.0" prefWidth="561.0" styleClass="antStats" text="Deaths:" textFill="WHITE" />
+         </children>
+      </AnchorPane>
+      <Canvas fx:id="battlescene" height="720.0" layoutX="31.0" layoutY="32.0" styleClass="battlefield" width="1859.0" />
+      <Button fx:id="resetButton" layoutX="929.0" layoutY="936.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="63.0" text="STOP" />
+      <Button fx:id="quitsimButton" layoutX="929.0" layoutY="1002.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="63.0" text="HOME" wrapText="true">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="resumeButton" layoutX="929.0" layoutY="870.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="63.0" text="START" />
+   </children>
+</AnchorPane>

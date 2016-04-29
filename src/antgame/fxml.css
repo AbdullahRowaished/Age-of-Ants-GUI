@@ -1,0 +1,16 @@
+/*
+ * @author Abdullah Rowaished
+ */
+
+.mainFxmlClass {
+}
+.antStats{
+    -fx-background-color:#006633;
+}
+.frame{
+    -fx-background-color:#333300;
+    -fx-border-color:#ff0000
+}
+.battlefield{
+    -fx-background-color:#ff33ff
+}

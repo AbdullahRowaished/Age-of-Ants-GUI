@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="mainTitle" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="425.0" prefWidth="341.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="antgame.Controller">
+   <children>
+      <Button fx:id="button1" layoutX="73.0" layoutY="221.0" mnemonicParsing="false" onAction="#startGame" prefHeight="81.0" prefWidth="196.0" text="Start" textFill="#7f380f">
+         <font>
+            <Font name="Vivaldi Italic" size="36.0" />
+         </font>
+      </Button>
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="71.0" layoutY="45.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@age-of-ants.jpg" />
+         </image>
+      </ImageView>
+      <Button fx:id="quitButton" layoutX="73.0" layoutY="330.0" mnemonicParsing="false" onAction="#quitGame" prefHeight="81.0" prefWidth="196.0" text="Quit" textFill="#7f380f">
+         <font>
+            <Font name="Vivaldi Italic" size="36.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>
