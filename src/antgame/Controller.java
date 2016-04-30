@@ -36,7 +36,7 @@ public class Controller implements Initializable {
     @FXML
     private Label launcherLabel/*tourney - error messages: illegal number of players; illegal world importation; missing parameters for game to start*/,
             addPlayerLabel/*subtourney - error messages: illegal name of player; illegal ant brain importation; missing parameters for player to be added*/,
-            loadBrainLabel/*subtourney*/;
+            loadBrainLabel/*subtourney - error messages: NONE; used to indicate if a brain is loaded or not, and the file name if loaded*/;
     @FXML
     private Button quitButton/*launcher*/,
             homeButton/*tourney*/,
