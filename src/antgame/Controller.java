@@ -188,6 +188,7 @@ public class Controller implements Initializable {
             }
             clearErrors();
             Main.stages.peek().show();
+            createPairings();
         } catch (PlayerAlreadyExistsException ex) {
             Main.exceptions.push(ex);
             faultyParamScenario(addButton, ex);
@@ -212,6 +213,7 @@ public class Controller implements Initializable {
                 throw new FileExtensionException();
             }
             clearErrors();
+            createPairings();
         } catch (FileExtensionException ex) {
             Main.exceptions.push(ex);
             faultyParamScenario(worldButton, ex);
@@ -372,6 +374,30 @@ public class Controller implements Initializable {
             Main.exceptions.push(ex);
         }
         return false;
+    }
+    /**
+     * creates a new pair of players for face off for every world map
+     */
+    private void createPairings() {
+        try {
+            Main.pairs.clear();
+            Main.matches.clear();
+            for (int i = 0; i < Main.players.size(); i++) {
+                for (int j = 0; j < Main.players.size(); j++) {
+                    if (i != j) {
+                        Main.pairs.push(new Pair(Main.players.get(i), Main.players.get(j)));
+                    }
+                }
+            }
+            for (int i = 0; i < Main.pairs.size(); i++) {
+                for (int j = 0; j < Main.worlds.size(); j++) {
+                    Main.matches.push(new Match(Main.worlds.get(j), Main.pairs.get(i)));
+                }
+            }
+        } catch (NullPointerException | EmptyStackException ex) {
+            Main.exceptions.push(ex);
+        }
+        //System.out.println("pairings: " + Main.pairs.size() + "\nmatches: " + Main.matches.size()); //DEBUGGER
     }
 
 
