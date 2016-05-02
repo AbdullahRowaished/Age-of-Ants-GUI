@@ -14,12 +14,18 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
+import javafx.util.Callback;
 
 /**
  * FXML Controller class
@@ -35,11 +41,13 @@ public class Controller implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
     }
     @FXML
-    private Label launcherLabel/*tourney - error messages: illegal number of players; illegal world importation; missing parameters for game to start*/,
+    private Label
+            launcherLabel/*tourney - error messages: illegal number of players; illegal world importation; missing parameters for game to start*/,
             addPlayerLabel/*subtourney - error messages: illegal name of player; illegal ant brain importation; missing parameters for player to be added*/,
             loadBrainLabel/*subtourney - error messages: NONE; used to indicate if a brain is loaded or not, and the file name if loaded*/;
     @FXML
-    private Button quitButton/*launcher*/,
+    private Button
+            quitButton/*launcher*/,
             homeButton/*tourney*/,
             loadButton/*tourney*/,
             addButton/*subtourney*/,
@@ -49,12 +57,23 @@ public class Controller implements Initializable {
             resumeButton/*battle*/,
             resetButton/*battle*/,
             quitsimButton/*battle*/,
-            skipButton/*subtourney*/;
+            skipButton/*subtourney*/,
+            showButton/*tourney*/;
     @FXML
-    private TextField numOfPlayersTA/*tourney*/,
+    private TextField
+            numOfPlayersTA/*tourney*/,
             playerAddTA/*subtourney*/;
     @FXML
-    private Canvas battlescene/*battle*/;
+    private Canvas
+            battlescene/*battle*/;
+    @FXML
+    private TableColumn
+            redColumn/*tourney*/,
+            blackColumn/*tourney*/,
+            worldColumn/*tourney*/;
+    @FXML
+    private TableView
+            pairingTable/*tourney*/;
 
     /**
      * hides the Launcher panel as it opens a new Tourney panel via clicking
@@ -261,6 +280,17 @@ public class Controller implements Initializable {
             Main.exceptions.push(ex);
             faultyParamScenario(playButton, new WrongParametersException());
         }
+    }
+    
+    @FXML
+    public void showPairings() {
+        String listings = "player 1\tplayer 2\tworld\n";
+        for(Match match : Main.matches) {
+            listings = listings.concat(match.toString());
+        }
+        redColumn.setCellValueFactory(new PropertyValueFactory<Match, String>("hell"));
+        pairingTable.getColumns().addAll("crap","bowl","boo");
+        //TODO
     }
 
     /*##############################################################################
