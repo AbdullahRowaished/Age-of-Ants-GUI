@@ -48,7 +48,10 @@ public class Controller implements Initializable {
             loadBrainLabel/*subtourney - error messages: NONE; used to indicate if a brain is loaded or not, and the file name if loaded*/,
             redAntLabel/*tourney*/,
             blackAntLabel/*tourney*/,
-            worldLabel/*tourney*/;
+            worldLabel/*tourney*/,
+            scoreNameLabel/*results*/,
+            scoreNumbLabel/*results*/,
+            victorLabel/*victory*/;
     @FXML
     private Button
             quitButton/*launcher*/,
@@ -62,7 +65,11 @@ public class Controller implements Initializable {
             resetButton/*battle*/,
             quitsimButton/*battle*/,
             skipButton/*subtourney*/,
-            showButton/*tourney*/;
+            showButton/*tourney*/,
+            nextGameButton/*results*/,
+            interCancelButton/*results*/,
+            scoreButton/*results*/,
+            victoryHomeButton/*victory*/;
     @FXML
     private TextField
             numOfPlayersTA/*tourney*/,
@@ -290,8 +297,6 @@ public class Controller implements Initializable {
         redAntLabel.setText(redListings);
         blackAntLabel.setText(blackListings);
         worldLabel.setText(worldListings);
-        
-        //TODO
     }
     
     @FXML
@@ -317,6 +322,35 @@ public class Controller implements Initializable {
         } else if (resumeButton.getText().equals("START")) {
             resumeButton.setText("PAUSE");
         }
+    }
+    
+    @FXML
+    public void nextMatch() {
+        goHome();
+        //prepareNextMatch();
+        //OSCAR
+    }
+    
+    @FXML
+    public void goHomeResults() {
+        goHome();
+        //OSCAR
+    }
+    
+    @FXML
+    public void showScores() {
+        for (Player player : Main.players) {
+            scoreNameLabel.setText(player.name + "\n");
+            scoreNumbLabel.setText(player.score + "\n");
+        }
+        //OSCAR
+    }
+    
+    @FXML
+    public void goHomeVictory() {
+        //OSCAR
+        goHome();
+        goHome();
     }
 
     /*##############################################################################

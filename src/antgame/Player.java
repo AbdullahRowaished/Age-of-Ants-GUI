@@ -9,9 +9,11 @@ import java.io.File;
 class Player {
     String name;
     File brain;
+    int score;
     
     Player(String name, File brain) {
         this.name = name;
         this.brain = brain;
+        score = 0;
     }
 }

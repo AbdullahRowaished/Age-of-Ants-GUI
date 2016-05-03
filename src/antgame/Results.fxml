@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="650.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="antgame.Controller">
+    <stylesheets>
+        <URL value="@fxml.css" />
+    </stylesheets>
+   <children>
+      <Button fx:id="interCancelButton" layoutX="268.0" layoutY="576.0" mnemonicParsing="false" onAction="#goHomeResults" prefHeight="60.0" prefWidth="114.0" text="Home" />
+      <Button fx:id="scoreButton" layoutX="105.0" layoutY="576.0" mnemonicParsing="false" onAction="#showScores" prefHeight="60.0" prefWidth="114.0" text="Score" />
+      <Button fx:id="nextGameButton" layoutX="431.0" layoutY="576.0" mnemonicParsing="false" onAction="#nextMatch" prefHeight="60.0" prefWidth="114.0" text="Next" />
+      <Label alignment="CENTER" layoutX="162.0" layoutY="14.0" prefHeight="87.0" prefWidth="326.0" text="Match Over!">
+         <font>
+            <Font size="36.0" />
+         </font>
+      </Label>
+      <Label fx:id="scoreNameLabel" alignment="TOP_CENTER" layoutX="177.0" layoutY="101.0" prefHeight="440.0" prefWidth="142.0" wrapText="true" />
+      <Label fx:id="scoreNumbLabel" alignment="TOP_CENTER" layoutX="357.0" layoutY="101.0" prefHeight="440.0" prefWidth="94.0" wrapText="true" />
+   </children>
+</AnchorPane>
