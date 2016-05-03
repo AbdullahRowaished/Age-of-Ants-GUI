@@ -19,6 +19,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
@@ -67,8 +68,8 @@ public class Controller implements Initializable {
             numOfPlayersTA/*tourney*/,
             playerAddTA/*subtourney*/;
     @FXML
-    private Canvas
-            battlescene/*battle*/;
+    private TextArea
+            battlefield;
 
     /**
      * hides the Launcher panel as it opens a new Tourney panel via clicking
@@ -243,6 +244,7 @@ public class Controller implements Initializable {
         try {
             if (Main.popup_counter >= 1) {
                 Main.stages.pop().close();
+                Main.brain_counter--;
                 Main.popup_counter--;
             }
             Main.stages.peek().show();
@@ -290,6 +292,31 @@ public class Controller implements Initializable {
         worldLabel.setText(worldListings);
         
         //TODO
+    }
+    
+    @FXML
+    public void quitSimulation() {
+        killGame();
+        Main.stages.pop().close();
+        Main.stages.peek().show();
+    }
+    
+    @FXML
+    public void killGame() {
+        //OSCAR
+        resumeButton.setText("START");
+    }
+    
+    @FXML
+    public void pauseGame() {
+        //OSCAR
+        if (resumeButton.getText().equals("PAUSE")) {
+            resumeButton.setText("RESUME");
+        } else if (resumeButton.getText().equals("RESUME")) {
+            resumeButton.setText("PAUSE");
+        } else if (resumeButton.getText().equals("START")) {
+            resumeButton.setText("PAUSE");
+        }
     }
 
     /*##############################################################################
