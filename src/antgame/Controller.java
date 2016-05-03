@@ -44,7 +44,10 @@ public class Controller implements Initializable {
     private Label
             launcherLabel/*tourney - error messages: illegal number of players; illegal world importation; missing parameters for game to start*/,
             addPlayerLabel/*subtourney - error messages: illegal name of player; illegal ant brain importation; missing parameters for player to be added*/,
-            loadBrainLabel/*subtourney - error messages: NONE; used to indicate if a brain is loaded or not, and the file name if loaded*/;
+            loadBrainLabel/*subtourney - error messages: NONE; used to indicate if a brain is loaded or not, and the file name if loaded*/,
+            redAntLabel/*tourney*/,
+            blackAntLabel/*tourney*/,
+            worldLabel/*tourney*/;
     @FXML
     private Button
             quitButton/*launcher*/,
@@ -66,14 +69,6 @@ public class Controller implements Initializable {
     @FXML
     private Canvas
             battlescene/*battle*/;
-    @FXML
-    private TableColumn
-            redColumn/*tourney*/,
-            blackColumn/*tourney*/,
-            worldColumn/*tourney*/;
-    @FXML
-    private TableView
-            pairingTable/*tourney*/;
 
     /**
      * hides the Launcher panel as it opens a new Tourney panel via clicking
@@ -284,12 +279,16 @@ public class Controller implements Initializable {
     
     @FXML
     public void showPairings() {
-        String listings = "player 1\tplayer 2\tworld\n";
+        String redListings = "player 1\n", blackListings = "player 2\n", worldListings = "world\n";
         for(Match match : Main.matches) {
-            listings = listings.concat(match.toString());
+            redListings = redListings.concat(match.pair.player1.name + "\n");
+            blackListings = blackListings.concat(match.pair.player2.name + "\n");
+            worldListings = worldListings.concat(match.world.world.getName() + "\n");
         }
-        redColumn.setCellValueFactory(new PropertyValueFactory<Match, String>("hell"));
-        pairingTable.getColumns().addAll("crap","bowl","boo");
+        redAntLabel.setText(redListings);
+        blackAntLabel.setText(blackListings);
+        worldLabel.setText(worldListings);
+        
         //TODO
     }
 
@@ -383,6 +382,13 @@ public class Controller implements Initializable {
         }
         try {
             this.loadBrainLabel.setText("");
+        } catch (NullPointerException ex) {
+            Main.exceptions.push(ex);
+        }
+        try {
+            redAntLabel.setText("");
+            blackAntLabel.setText("");
+            worldLabel.setText("");
         } catch (NullPointerException ex) {
             Main.exceptions.push(ex);
         }

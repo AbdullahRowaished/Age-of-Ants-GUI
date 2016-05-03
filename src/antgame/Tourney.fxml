@@ -28,12 +28,8 @@
          <font>
             <Font size="9.0" />
          </font></Label>
-      <TableView fx:id="pairingTable" layoutX="4.0" layoutY="61.0" prefHeight="374.0" prefWidth="189.0">
-        <columns>
-          <TableColumn fx:id="redColumn" editable="false" prefWidth="63.0" resizable="false" sortable="false" text="Red" />
-          <TableColumn fx:id="blackColumn" prefWidth="63.0" resizable="false" text="Black" />
-            <TableColumn fx:id="worldColumn" prefWidth="63.0" resizable="false" text="World" />
-        </columns>
-      </TableView>
+      <Label fx:id="redAntLabel" alignment="TOP_CENTER" layoutX="14.0" layoutY="72.0" prefHeight="356.0" prefWidth="61.0" />
+      <Label fx:id="blackAntLabel" alignment="TOP_CENTER" layoutX="75.0" layoutY="72.0" prefHeight="356.0" prefWidth="61.0" />
+      <Label fx:id="worldLabel" alignment="TOP_CENTER" layoutX="136.0" layoutY="72.0" prefHeight="356.0" prefWidth="61.0" />
    </children>
 </AnchorPane>
