@@ -203,20 +203,22 @@ public class Controller implements Initializable {
                 throw new PlayerAlreadyExistsException();
             }
             //OSCAR (add new player)
-            Main.players.push(new Player(playerAddTA.getText(), new File(playerAddTA.getText())));
+            Main.game.addPlayer(playerAddTA.getText(), new File(playerAddTA.getText()));
             if (Main.popup_counter >= 1) {
                 Main.stages.pop().close();
                 Main.popup_counter--;
             }
             clearErrors();
             Main.stages.peek().show();
-            createPairings();
+            //createPairings();
         } catch (PlayerAlreadyExistsException ex) {
             Main.exceptions.push(ex);
             faultyParamScenario(addButton, ex);
         } catch (WrongNamingException | NoBrainException ex) {
             Main.exceptions.push(ex);
             faultyParamScenario(addButton, ex);
+        } catch (IOException ex) {
+            Main.exceptions.push(ex);
         }
     }
 
@@ -230,12 +232,13 @@ public class Controller implements Initializable {
             Window window = new Stage();
             fc.setTitle("Pick your Fight!");
             ((Stage) window).initStyle(StageStyle.UNDECORATED);
-            Main.worlds.push(new World(fc.showOpenDialog(window)));
-            if (!Main.worlds.peek().world.getName().endsWith(".world")) {
+            File file = fc.showOpenDialog(window);
+            Main.game.loadWorld(file);
+            if (!file.getName().endsWith(".world")) {
                 throw new FileExtensionException();
             }
             clearErrors();
-            createPairings();
+            //createPairings();
         } catch (FileExtensionException ex) {
             Main.exceptions.push(ex);
             faultyParamScenario(worldButton, ex);
@@ -267,7 +270,7 @@ public class Controller implements Initializable {
     @FXML
     public void playGame() {
         try {
-            if (Main.worlds.size() < 1 || Main.players.size() < 2) {
+            if (Main.game.getPlayerNum() < 2) {
                 throw new MissingGameParamsException();
             }
             Stage battle = new Stage();
@@ -289,10 +292,10 @@ public class Controller implements Initializable {
     @FXML
     public void showPairings() {
         String redListings = "player 1\n", blackListings = "player 2\n", worldListings = "world\n";
-        for(Match match : Main.matches) {
-            redListings = redListings.concat(match.pair.player1.name + "\n");
-            blackListings = blackListings.concat(match.pair.player2.name + "\n");
-            worldListings = worldListings.concat(match.world.world.getName() + "\n");
+        for(int i = 0; i < Main.game.getPlayerNum() * (Main.game.getPlayerNum() - 1); i++) {
+            //redListings = redListings.concat(match.pair.player1.name + "\n");
+            //blackListings = blackListings.concat(match.pair.player2.name + "\n");
+            //worldListings = worldListings.concat(match.world.world.getName() + "\n");
         }
         redAntLabel.setText(redListings);
         blackAntLabel.setText(blackListings);
@@ -339,9 +342,9 @@ public class Controller implements Initializable {
     
     @FXML
     public void showScores() {
-        for (Player player : Main.players) {
-            scoreNameLabel.setText(player.name + "\n");
-            scoreNumbLabel.setText(player.score + "\n");
+        for (Player player : Main.game.getPlayers()) {
+            scoreNameLabel.setText(player.getName() + "\n");
+            scoreNumbLabel.setText(player.currentScore() + "\n");
         }
         //OSCAR
     }
@@ -462,8 +465,8 @@ public class Controller implements Initializable {
      */
     private boolean playersExists(String potential) {
         try {
-            for (Player player : Main.players) {
-                if (player.name.equals(potential)) {
+            for (Player player : Main.game.getPlayers()) {
+                if (player.getName().equals(potential)) {
                     return true;
                 }
             }
@@ -475,27 +478,27 @@ public class Controller implements Initializable {
     /**
      * creates a new pair of players for face off for every world map
      */
-    private void createPairings() {
-        try {
-            Main.pairs.clear();
-            Main.matches.clear();
-            for (int i = 0; i < Main.players.size(); i++) {
-                for (int j = 0; j < Main.players.size(); j++) {
-                    if (i != j) {
-                        Main.pairs.push(new Pair(Main.players.get(i), Main.players.get(j)));
-                    }
-                }
-            }
-            for (int i = 0; i < Main.pairs.size(); i++) {
-                for (int j = 0; j < Main.worlds.size(); j++) {
-                    Main.matches.push(new Match(Main.worlds.get(j), Main.pairs.get(i)));
-                }
-            }
-        } catch (NullPointerException | EmptyStackException ex) {
-            Main.exceptions.push(ex);
-        }
-        //System.out.println("pairings: " + Main.pairs.size() + "\nmatches: " + Main.matches.size()); //DEBUGGER
+    /*private void createPairings() {
+    try {
+    Main.pairs.clear();
+    Main.matches.clear();
+    for (int i = 0; i < Main.players.size(); i++) {
+    for (int j = 0; j < Main.players.size(); j++) {
+    if (i != j) {
+    Main.pairs.push(new Pair(Main.players.get(i), Main.players.get(j)));
     }
+    }
+    }
+    for (int i = 0; i < Main.pairs.size(); i++) {
+    for (int j = 0; j < Main.worlds.size(); j++) {
+    Main.matches.push(new Match(Main.worlds.get(j), Main.pairs.get(i)));
+    }
+    }
+    } catch (NullPointerException | EmptyStackException ex) {
+    Main.exceptions.push(ex);
+    }
+    //System.out.println("pairings: " + Main.pairs.size() + "\nmatches: " + Main.matches.size()); //DEBUGGER
+    }*/
 
 
     /*##############################################################################

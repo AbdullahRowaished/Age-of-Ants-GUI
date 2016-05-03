@@ -28,11 +28,8 @@ public class Main extends Application {
             tempBrainFile/*TEMP: ant brain files loaded into the game are here NOTE: this field might not be necassry if consiladed as a field of custom class Player along with playerFiles*/;
             //playerFiles /*REFACTOR: this does not have any practical uses and shall be replaced with an ArrayList containing Player objects*/;
     public static Stack<Exception> exceptions/*DEBUGGER: could prove useful in handling exceptions; pushes every exception encountered in a try-catch into it*/;
-    public static Stack<Player> players/*players that are loaded into the game with the ant brains*/;
-    public static Stack<Pair> pairs/*players that are loaded and paird against each other; used in conjenction with maps*/;
-    public static Stack<World> worlds/*loaded worlds into the game*/;
-    public static Stack<Match> matches/*paired pairs and worlds*/;
     public static boolean load_flag/*VITAL: indicates if a file is successfully loaded, ant brain or ant world; prevents unintentional overwrites and bugs associated with it*/;
+    public static Game game;
     
     @Override
     public void start(Stage launcher) {
@@ -56,15 +53,14 @@ public class Main extends Application {
     public static void main(String[] args) {
         stages = new Stack<>();
         exceptions = new Stack<>();
-        players = new Stack<>();
-        pairs = new Stack<>();
-        worlds = new Stack<>();
-        matches = new Stack<>();
         popup_counter = 0;
         brain_counter = 0;
         player_counter = 0;
         map_counter = 0;
         load_flag = false;
+        game = new Game();
         launch(args);
+        
     }
+    
 }
