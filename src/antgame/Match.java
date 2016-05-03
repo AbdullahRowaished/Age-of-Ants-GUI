@@ -12,4 +12,9 @@ class Match {
         this.world = world;
         this.pair = pair;
     }
+    
+    @Override
+    public String toString() {
+        return pair.player1.name + "\t" + pair.player2.name + "\t" + world.world.getName() + "\n";
+    }
 }

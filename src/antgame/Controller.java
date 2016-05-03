@@ -14,12 +14,19 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
+import javafx.util.Callback;
 
 /**
  * FXML Controller class
@@ -35,11 +42,19 @@ public class Controller implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
     }
     @FXML
-    private Label launcherLabel/*tourney - error messages: illegal number of players; illegal world importation; missing parameters for game to start*/,
+    private Label
+            launcherLabel/*tourney - error messages: illegal number of players; illegal world importation; missing parameters for game to start*/,
             addPlayerLabel/*subtourney - error messages: illegal name of player; illegal ant brain importation; missing parameters for player to be added*/,
-            loadBrainLabel/*subtourney - error messages: NONE; used to indicate if a brain is loaded or not, and the file name if loaded*/;
+            loadBrainLabel/*subtourney - error messages: NONE; used to indicate if a brain is loaded or not, and the file name if loaded*/,
+            redAntLabel/*tourney*/,
+            blackAntLabel/*tourney*/,
+            worldLabel/*tourney*/,
+            scoreNameLabel/*results*/,
+            scoreNumbLabel/*results*/,
+            victorLabel/*victory*/;
     @FXML
-    private Button quitButton/*launcher*/,
+    private Button
+            quitButton/*launcher*/,
             homeButton/*tourney*/,
             loadButton/*tourney*/,
             addButton/*subtourney*/,
@@ -49,12 +64,19 @@ public class Controller implements Initializable {
             resumeButton/*battle*/,
             resetButton/*battle*/,
             quitsimButton/*battle*/,
-            skipButton/*subtourney*/;
+            skipButton/*subtourney*/,
+            showButton/*tourney*/,
+            nextGameButton/*results*/,
+            interCancelButton/*results*/,
+            scoreButton/*results*/,
+            victoryHomeButton/*victory*/;
     @FXML
-    private TextField numOfPlayersTA/*tourney*/,
+    private TextField
+            numOfPlayersTA/*tourney*/,
             playerAddTA/*subtourney*/;
     @FXML
-    private Canvas battlescene/*battle*/;
+    private TextArea
+            battlefield;
 
     /**
      * hides the Launcher panel as it opens a new Tourney panel via clicking
@@ -229,6 +251,7 @@ public class Controller implements Initializable {
         try {
             if (Main.popup_counter >= 1) {
                 Main.stages.pop().close();
+                Main.brain_counter--;
                 Main.popup_counter--;
             }
             Main.stages.peek().show();
@@ -261,6 +284,73 @@ public class Controller implements Initializable {
             Main.exceptions.push(ex);
             faultyParamScenario(playButton, new WrongParametersException());
         }
+    }
+    
+    @FXML
+    public void showPairings() {
+        String redListings = "player 1\n", blackListings = "player 2\n", worldListings = "world\n";
+        for(Match match : Main.matches) {
+            redListings = redListings.concat(match.pair.player1.name + "\n");
+            blackListings = blackListings.concat(match.pair.player2.name + "\n");
+            worldListings = worldListings.concat(match.world.world.getName() + "\n");
+        }
+        redAntLabel.setText(redListings);
+        blackAntLabel.setText(blackListings);
+        worldLabel.setText(worldListings);
+    }
+    
+    @FXML
+    public void quitSimulation() {
+        killGame();
+        Main.stages.pop().close();
+        Main.stages.peek().show();
+    }
+    
+    @FXML
+    public void killGame() {
+        //OSCAR
+        resumeButton.setText("START");
+    }
+    
+    @FXML
+    public void pauseGame() {
+        //OSCAR
+        if (resumeButton.getText().equals("PAUSE")) {
+            resumeButton.setText("RESUME");
+        } else if (resumeButton.getText().equals("RESUME")) {
+            resumeButton.setText("PAUSE");
+        } else if (resumeButton.getText().equals("START")) {
+            resumeButton.setText("PAUSE");
+        }
+    }
+    
+    @FXML
+    public void nextMatch() {
+        goHome();
+        //prepareNextMatch();
+        //OSCAR
+    }
+    
+    @FXML
+    public void goHomeResults() {
+        goHome();
+        //OSCAR
+    }
+    
+    @FXML
+    public void showScores() {
+        for (Player player : Main.players) {
+            scoreNameLabel.setText(player.name + "\n");
+            scoreNumbLabel.setText(player.score + "\n");
+        }
+        //OSCAR
+    }
+    
+    @FXML
+    public void goHomeVictory() {
+        //OSCAR
+        goHome();
+        goHome();
     }
 
     /*##############################################################################
@@ -353,6 +443,13 @@ public class Controller implements Initializable {
         }
         try {
             this.loadBrainLabel.setText("");
+        } catch (NullPointerException ex) {
+            Main.exceptions.push(ex);
+        }
+        try {
+            redAntLabel.setText("");
+            blackAntLabel.setText("");
+            worldLabel.setText("");
         } catch (NullPointerException ex) {
             Main.exceptions.push(ex);
         }

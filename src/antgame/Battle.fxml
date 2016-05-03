@@ -12,44 +12,46 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1280.0" styleClass="frame" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="antgame.Controller">
+<AnchorPane prefHeight="1080.0" prefWidth="1325.0" styleClass="frame" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="antgame.Controller">
     <stylesheets>
         <URL value="@fxml.css" />
     </stylesheets>
    <children>
-      <AnchorPane layoutX="1328.0" layoutY="825.0" prefHeight="200.0" prefWidth="578.0">
+      <AnchorPane layoutX="721.0" layoutY="797.0" prefHeight="200.0" prefWidth="578.0">
          <children>
-            <Label alignment="CENTER" layoutX="9.0" layoutY="5.0" prefHeight="53.0" prefWidth="561.0" styleClass="antStats" text="Ants Left:" textFill="WHITE" />
-            <Label alignment="CENTER" layoutX="9.0" layoutY="65.0" prefHeight="53.0" prefWidth="561.0" styleClass="antStats" text="Score:" textFill="WHITE" />
-            <Label alignment="CENTER" layoutX="9.0" layoutY="125.0" prefHeight="53.0" prefWidth="561.0" styleClass="antStats" text="Kills:" textFill="WHITE" />
-            <Label alignment="CENTER" layoutX="9.0" layoutY="185.0" prefHeight="53.0" prefWidth="561.0" styleClass="antStats" text="Deaths:" textFill="WHITE" />
+            <Label layoutX="9.0" layoutY="5.0" prefHeight="53.0" prefWidth="561.0" styleClass="antStats" text="Ants Left:" textFill="WHITE" />
+            <Label layoutX="9.0" layoutY="65.0" prefHeight="53.0" prefWidth="561.0" styleClass="antStats" text="Score:" textFill="WHITE" />
+            <Label layoutX="9.0" layoutY="125.0" prefHeight="53.0" prefWidth="561.0" styleClass="antStats" text="Kills:" textFill="WHITE" />
+            <Label layoutX="9.0" layoutY="185.0" prefHeight="53.0" prefWidth="561.0" styleClass="antStats" text="Deaths:" textFill="WHITE" />
+            <ProgressBar layoutX="77.0" layoutY="20.0" prefHeight="23.0" prefWidth="475.0" progress="0.0" />
          </children>
       </AnchorPane>
-      <Label alignment="CENTER" layoutX="40.0" layoutY="765.0" prefHeight="53.0" prefWidth="110.0" text="RED" textAlignment="CENTER" textFill="RED">
+      <Label alignment="CENTER" layoutX="34.0" layoutY="731.0" prefHeight="53.0" prefWidth="110.0" text="RED" textAlignment="CENTER" textFill="RED">
          <font>
             <Font name="Andalus" size="24.0" />
          </font>
       </Label>
-      <Label alignment="CENTER" layoutX="1350.0" layoutY="765.0" prefHeight="53.0" prefWidth="123.0" text="BLACK" textAlignment="CENTER" textFill="BLUE">
+      <Label alignment="CENTER" layoutX="743.0" layoutY="737.0" prefHeight="53.0" prefWidth="123.0" text="BLACK" textAlignment="CENTER" textFill="BLUE">
          <font>
             <Font name="Andalus" size="24.0" />
          </font>
       </Label>
-      <AnchorPane layoutX="20.0" layoutY="825.0" prefHeight="253.0" prefWidth="578.0">
+      <AnchorPane layoutX="14.0" layoutY="791.0" prefHeight="253.0" prefWidth="578.0">
          <children>
-            <Label alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" layoutX="9.0" layoutY="5.0" prefHeight="53.0" prefWidth="561.0" styleClass="antStats" stylesheets="@fxml.css" text="Ants Left:" textAlignment="CENTER" textFill="WHITE" />
-            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="9.0" layoutY="65.0" prefHeight="53.0" prefWidth="561.0" styleClass="antStats" text="Score:" textFill="WHITE" />
-            <Label alignment="CENTER" layoutX="9.0" layoutY="125.0" prefHeight="53.0" prefWidth="561.0" styleClass="antStats" text="Kills:" textFill="WHITE" />
-            <Label alignment="CENTER" layoutX="9.0" layoutY="185.0" prefHeight="53.0" prefWidth="561.0" styleClass="antStats" text="Deaths:" textFill="WHITE" />
+            <Label contentDisplay="CENTER" focusTraversable="false" layoutX="9.0" layoutY="5.0" prefHeight="53.0" prefWidth="561.0" styleClass="antStats" stylesheets="@fxml.css" text="Ants Left:" textAlignment="CENTER" textFill="WHITE" />
+            <Label contentDisplay="CENTER" layoutX="9.0" layoutY="65.0" prefHeight="53.0" prefWidth="561.0" styleClass="antStats" text="Score:" textFill="WHITE" />
+            <Label layoutX="9.0" layoutY="125.0" prefHeight="53.0" prefWidth="561.0" styleClass="antStats" text="Kills:" textFill="WHITE" />
+            <Label layoutX="9.0" layoutY="185.0" prefHeight="53.0" prefWidth="561.0" styleClass="antStats" text="Deaths:" textAlignment="RIGHT" textFill="WHITE" />
+            <ProgressBar layoutX="80.0" layoutY="20.0" prefHeight="23.0" prefWidth="475.0" progress="0.0" />
          </children>
       </AnchorPane>
-      <Canvas fx:id="battlescene" height="720.0" layoutX="31.0" layoutY="32.0" styleClass="battlefield" width="1859.0" />
-      <Button fx:id="resetButton" layoutX="929.0" layoutY="936.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="63.0" text="STOP" />
-      <Button fx:id="quitsimButton" layoutX="929.0" layoutY="1002.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="63.0" text="HOME" wrapText="true">
+      <Button fx:id="resetButton" alignment="CENTER" layoutX="615.0" layoutY="903.0" mnemonicParsing="false" onAction="#killGame" prefHeight="31.0" prefWidth="96.0" text="STOP" textAlignment="CENTER" wrapText="true" />
+      <Button fx:id="quitsimButton" alignment="CENTER" layoutX="631.0" layoutY="966.0" mnemonicParsing="false" onAction="#quitSimulation" prefHeight="31.0" prefWidth="63.0" text="HOME" textAlignment="CENTER" wrapText="true">
          <font>
             <Font size="14.0" />
          </font>
       </Button>
-      <Button fx:id="resumeButton" layoutX="929.0" layoutY="870.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="63.0" text="START" />
+      <Button fx:id="resumeButton" alignment="CENTER" layoutX="615.0" layoutY="837.0" mnemonicParsing="false" onAction="#pauseGame" prefHeight="31.0" prefWidth="96.0" text="START" textAlignment="CENTER" wrapText="true" />
+      <TextArea fx:id="battlefield" layoutX="338.0" layoutY="47.0" prefHeight="650.0" prefWidth="650.0" />
    </children>
 </AnchorPane>

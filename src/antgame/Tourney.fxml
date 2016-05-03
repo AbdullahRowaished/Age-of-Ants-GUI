@@ -21,13 +21,15 @@
       </Label>
       <Button fx:id="homeButton" layoutX="195.0" layoutY="14.0" mnemonicParsing="false" onAction="#goHome" text="Home" />
       <Button fx:id="worldButton" layoutX="170.0" layoutY="455.0" mnemonicParsing="false" onAction="#importWorld" text="Import World" />
-      <Button layoutX="14.0" layoutY="455.0" mnemonicParsing="false" text="Show Pairings" />
+      <Button fx:id="showButton" layoutX="14.0" layoutY="455.0" mnemonicParsing="false" onAction="#showPairings" text="Show Pairings" />
       <Button fx:id="playButton" layoutX="326.0" layoutY="455.0" mnemonicParsing="false" onAction="#playGame" text="Start Game" />
       <Button fx:id="loadButton" layoutX="281.0" layoutY="281.0" mnemonicParsing="false" onAction="#loadPlayers" text="Load Players" />
       <Label fx:id="launcherLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="225.0" layoutY="49.0" prefHeight="102.0" prefWidth="201.0" textAlignment="CENTER">
          <font>
             <Font size="9.0" />
          </font></Label>
-      <Label fx:id="pairingLabel" alignment="TOP_CENTER" layoutX="6.0" layoutY="56.0" prefHeight="383.0" prefWidth="201.0" />
+      <Label fx:id="redAntLabel" alignment="TOP_CENTER" layoutX="14.0" layoutY="72.0" prefHeight="356.0" prefWidth="61.0" />
+      <Label fx:id="blackAntLabel" alignment="TOP_CENTER" layoutX="75.0" layoutY="72.0" prefHeight="356.0" prefWidth="61.0" />
+      <Label fx:id="worldLabel" alignment="TOP_CENTER" layoutX="136.0" layoutY="72.0" prefHeight="356.0" prefWidth="61.0" />
    </children>
 </AnchorPane>
