@@ -1,5 +1,6 @@
 package antgame;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.EmptyStackException;
@@ -99,15 +100,15 @@ public class Controller implements Initializable {
             Stage window = new Stage();
             window.initStyle(StageStyle.UNDECORATED);
             fc.setTitle("Pick your Brain!");
-            Main.brainFiles.push(fc.showOpenDialog(window));
-            if (!Main.brainFiles.peek().getCanonicalPath().endsWith(".ant")) {
+            Main.tempBrainFile = (fc.showOpenDialog(window));
+            if (!Main.tempBrainFile.getCanonicalPath().endsWith(".ant")) {
                 throw new FileExtensionException();
             }
             if (!Main.load_flag) {
                 Main.brain_counter--;
             }
             Main.load_flag = true;
-            loadBrainLabel.setText("brain: " + Main.brainFiles.peek().getName());
+            loadBrainLabel.setText("brain: " + Main.tempBrainFile.getName());
             launcherLabel.setText("");
             //System.out.println("try: " + Main.brain_counter); //DEBUGGER
         } catch (FileExtensionException ex) {
@@ -176,14 +177,21 @@ public class Controller implements Initializable {
             if (Main.brain_counter != Main.popup_counter) {
                 throw new NoBrainException();
             }
+            if (playersExists(playerAddTA.getText())) {
+                throw new PlayerAlreadyExistsException();
+            }
             //OSCAR (add new player)
-            Main.number_of_players++;
+            Main.players.push(new Player(playerAddTA.getText(), new File(playerAddTA.getText())));
             if (Main.popup_counter >= 1) {
                 Main.stages.pop().close();
                 Main.popup_counter--;
             }
             clearErrors();
             Main.stages.peek().show();
+            createPairings();
+        } catch (PlayerAlreadyExistsException ex) {
+            Main.exceptions.push(ex);
+            faultyParamScenario(addButton, ex);
         } catch (WrongNamingException | NoBrainException ex) {
             Main.exceptions.push(ex);
             faultyParamScenario(addButton, ex);
@@ -200,12 +208,12 @@ public class Controller implements Initializable {
             Window window = new Stage();
             fc.setTitle("Pick your Fight!");
             ((Stage) window).initStyle(StageStyle.UNDECORATED);
-            Main.worldFiles.push(fc.showOpenDialog(window));
-            Main.number_of_maps++;
-            if (!Main.worldFiles.peek().getName().endsWith(".world")) {
+            Main.worlds.push(new World(fc.showOpenDialog(window)));
+            if (!Main.worlds.peek().world.getName().endsWith(".world")) {
                 throw new FileExtensionException();
             }
             clearErrors();
+            createPairings();
         } catch (FileExtensionException ex) {
             Main.exceptions.push(ex);
             faultyParamScenario(worldButton, ex);
@@ -236,7 +244,7 @@ public class Controller implements Initializable {
     @FXML
     public void playGame() {
         try {
-            if (Main.number_of_maps < 1 || Main.number_of_players < 2) {
+            if (Main.worlds.size() < 1 || Main.players.size() < 2) {
                 throw new MissingGameParamsException();
             }
             Stage battle = new Stage();
@@ -249,6 +257,9 @@ public class Controller implements Initializable {
         } catch (WrongParametersException | IOException ex) {
             Main.exceptions.push(ex);
             faultyParamScenario(playButton, ex);
+        } catch (NullPointerException ex) {
+            Main.exceptions.push(ex);
+            faultyParamScenario(playButton, new WrongParametersException());
         }
     }
 
@@ -276,7 +287,7 @@ public class Controller implements Initializable {
                 isNum = false;
             }
         }
-        if (isNum && Integer.parseInt(taStr) >= 2 && Integer.parseInt(taStr) <= 64) {
+        if (isNum && Integer.parseInt(taStr) >= 1 && Integer.parseInt(taStr) <= 64) {
             numOfPlayersInt = Integer.parseInt(taStr);
         }
         return numOfPlayersInt;
@@ -291,7 +302,7 @@ public class Controller implements Initializable {
             Label label = null;
             if (button == loadButton) {
                 label = launcherLabel;
-                label.setText("error: user must enter an integer between \n and including 2 and 64");
+                label.setText("error: user must enter an integer between \n and including 1 and 64");
             } else if (button == playButton) {
                 label = launcherLabel;
                 if (exept instanceof WrongParametersException) {
@@ -301,7 +312,9 @@ public class Controller implements Initializable {
                 }
             } else if (button == addButton) {
                 label = addPlayerLabel;
-                if (exept instanceof WrongNamingException) {
+                if (exept instanceof PlayerAlreadyExistsException) {
+                    label.setText("error: cannot add new player; \n use must enter a player that is not loaded already");
+                } else if (exept instanceof WrongNamingException) {
                     label.setText("error: cannot add new player; \n user must enter a String beginning with an alphabetic letter");
                 } else if (exept instanceof NoBrainException) {
                     label.setText("error: cannot add new player; \n user must load an ant brain");
@@ -344,6 +357,47 @@ public class Controller implements Initializable {
             Main.exceptions.push(ex);
         }
 
+    }
+    /**
+     * checks if player already exists in the database
+     * @param potential
+     * @return 
+     */
+    private boolean playersExists(String potential) {
+        try {
+            for (Player player : Main.players) {
+                if (player.name.equals(potential)) {
+                    return true;
+                }
+            }
+        } catch (NullPointerException ex) {
+            Main.exceptions.push(ex);
+        }
+        return false;
+    }
+    /**
+     * creates a new pair of players for face off for every world map
+     */
+    private void createPairings() {
+        try {
+            Main.pairs.clear();
+            Main.matches.clear();
+            for (int i = 0; i < Main.players.size(); i++) {
+                for (int j = 0; j < Main.players.size(); j++) {
+                    if (i != j) {
+                        Main.pairs.push(new Pair(Main.players.get(i), Main.players.get(j)));
+                    }
+                }
+            }
+            for (int i = 0; i < Main.pairs.size(); i++) {
+                for (int j = 0; j < Main.worlds.size(); j++) {
+                    Main.matches.push(new Match(Main.worlds.get(j), Main.pairs.get(i)));
+                }
+            }
+        } catch (NullPointerException | EmptyStackException ex) {
+            Main.exceptions.push(ex);
+        }
+        //System.out.println("pairings: " + Main.pairs.size() + "\nmatches: " + Main.matches.size()); //DEBUGGER
     }
 
 
@@ -420,6 +474,15 @@ public class Controller implements Initializable {
     private class FileExtensionException extends IOException {
 
         FileExtensionException() {
+            super();
+        }
+    }
+    /**
+     * if player name matches another that is already loaded, this is thrown
+     */
+    private class PlayerAlreadyExistsException extends WrongNamingException {
+        
+        PlayerAlreadyExistsException() {
             super();
         }
     }

@@ -21,16 +21,17 @@ public class Main extends Application {
             popup_counter/*counts how many "load player" windows are to popup; usually equates to how many players the user wishes to add at that instance*/,
             player_counter/*counts how many players to be loaded in an instance, decrements once a player is loaded until it reaches 0; initial value equates popup_counter*/,
             brain_counter/*same concept as player_counter except it starts as player_counter - 1; everytime brain_counter == player_counter, the program assumes a player is ready to be added*/,
-            map_counter/*temporary value to ensure synchronuousy of map count*/,
-            number_of_players/*actual number of players loaded onto the game, with a name and an ant brain for them*/,
-            number_of_maps/*actual number of maps loaded onto the game*/;
+            map_counter/*temporary value to ensure synchronuousy of map count*/;
     public static Stack<Stage> stages/*a stack machine for windows, the latest window gets to be popped off\peeked at from the stack to be viewed, showed, or updated*/;
-    public static Stack<File>
-            worldFiles/*world files loaded into the game are here NOTE: type of field might change to ArrayList*/,
-            brainFiles/*TEMP: ant brain files loaded into the game are here NOTE: this field might not be necassry if consiladed as a field of custom class Player along with playerFiles*/,
-            playerFiles /*REFACTOR: this does not have any practical uses and shall be replaced with an ArrayList containing Player objects*/;
+    public static File
+            //worldFiles/*world files loaded into the game are here NOTE: type of field might change to ArrayList*/,
+            tempBrainFile/*TEMP: ant brain files loaded into the game are here NOTE: this field might not be necassry if consiladed as a field of custom class Player along with playerFiles*/;
+            //playerFiles /*REFACTOR: this does not have any practical uses and shall be replaced with an ArrayList containing Player objects*/;
     public static Stack<Exception> exceptions/*DEBUGGER: could prove useful in handling exceptions; pushes every exception encountered in a try-catch into it*/;
-    public static HashMap<File, File> player_brain_map/*REFACTOR: see comments on brainFiles*/;
+    public static Stack<Player> players/*players that are loaded into the game with the ant brains*/;
+    public static Stack<Pair> pairs/*players that are loaded and paird against each other; used in conjenction with maps*/;
+    public static Stack<World> worlds/*loaded worlds into the game*/;
+    public static Stack<Match> matches/*paired pairs and worlds*/;
     public static boolean load_flag/*VITAL: indicates if a file is successfully loaded, ant brain or ant world; prevents unintentional overwrites and bugs associated with it*/;
     
     @Override
@@ -54,17 +55,15 @@ public class Main extends Application {
      */
     public static void main(String[] args) {
         stages = new Stack<>();
-        worldFiles = new Stack<>();
-        brainFiles = new Stack<>();
-        playerFiles = new Stack<>();
         exceptions = new Stack<>();
-        player_brain_map = new HashMap<>();
+        players = new Stack<>();
+        pairs = new Stack<>();
+        worlds = new Stack<>();
+        matches = new Stack<>();
         popup_counter = 0;
         brain_counter = 0;
         player_counter = 0;
         map_counter = 0;
-        number_of_players = 0;
-        number_of_maps = 0;
         load_flag = false;
         launch(args);
     }
