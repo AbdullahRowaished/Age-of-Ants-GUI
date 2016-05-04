@@ -394,13 +394,9 @@ public class Game{
     /**
      * @param w world to be pared and then loaded
      */
-    public boolean loadWorld(File w) {
+    public boolean loadWorld(File w) throws Exception {
         WorldParser wp = new WorldParser();
-        try {
-            wp.loadWorld(w);
-        } catch (Exception ex) {
-            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        wp.loadWorld(w);
         world.setWorld(wp.getWorld());
         world.setDimensions(wp.getX(), wp.getY());
         world.setName(w.getName());

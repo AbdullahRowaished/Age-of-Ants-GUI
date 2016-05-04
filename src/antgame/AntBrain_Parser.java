@@ -27,22 +27,13 @@ public class AntBrain_Parser {
      * Parses the brain
      * @param file the file to be parsed
      */
-    public AntBrain_Parser(File file) throws IOException
+    public AntBrain_Parser(File file) throws IOException, FileNotFoundException
     {
         b1 = file;
         brain = new ArrayList();
         BufferedReader r1;
-        try
-        {
-            FileReader f1 = new FileReader(b1);
-            r1 = new BufferedReader(f1);
-        }
-        catch (FileNotFoundException e)
-        {
-            System.err.println("File not found");
-            return;
-        }
-        
+        FileReader f1 = new FileReader(b1);
+        r1 = new BufferedReader(f1);
         String inputLine;
         int count = 0;
         
