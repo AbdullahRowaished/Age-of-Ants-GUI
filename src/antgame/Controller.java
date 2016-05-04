@@ -1,6 +1,7 @@
 package antgame;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.EmptyStackException;
@@ -12,21 +13,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
-import javafx.util.Callback;
 
 /**
  * FXML Controller class
@@ -42,8 +36,7 @@ public class Controller implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
     }
     @FXML
-    private Label
-            launcherLabel/*tourney - error messages: illegal number of players; illegal world importation; missing parameters for game to start*/,
+    private Label launcherLabel/*tourney - error messages: illegal number of players; illegal world importation; missing parameters for game to start*/,
             addPlayerLabel/*subtourney - error messages: illegal name of player; illegal ant brain importation; missing parameters for player to be added*/,
             loadBrainLabel/*subtourney - error messages: NONE; used to indicate if a brain is loaded or not, and the file name if loaded*/,
             redAntLabel/*tourney*/,
@@ -53,8 +46,7 @@ public class Controller implements Initializable {
             scoreNumbLabel/*results*/,
             victorLabel/*victory*/;
     @FXML
-    private Button
-            quitButton/*launcher*/,
+    private Button quitButton/*launcher*/,
             homeButton/*tourney*/,
             loadButton/*tourney*/,
             addButton/*subtourney*/,
@@ -71,12 +63,10 @@ public class Controller implements Initializable {
             scoreButton/*results*/,
             victoryHomeButton/*victory*/;
     @FXML
-    private TextField
-            numOfPlayersTA/*tourney*/,
+    private TextField numOfPlayersTA/*tourney*/,
             playerAddTA/*subtourney*/;
     @FXML
-    private TextArea
-            battlefield;
+    private TextArea battlefield;
 
     /**
      * hides the Launcher panel as it opens a new Tourney panel via clicking
@@ -187,8 +177,9 @@ public class Controller implements Initializable {
     }
 
     /**
-     * click OK to continue the game to recover from faultyParamScenario-related exceptions
-     * 
+     * click OK to continue the game to recover from faultyParamScenario-related
+     * exceptions
+     *
      */
     @FXML
     public void addPlayer() {
@@ -196,27 +187,33 @@ public class Controller implements Initializable {
             if (playerAddTA.getText().isEmpty() || !Character.isLetter(playerAddTA.getText().toCharArray()[0])) {
                 throw new WrongNamingException();
             }
-            if (Main.brain_counter != Main.popup_counter) {
+            if (Main.tempBrainFile == null) {
                 throw new NoBrainException();
             }
             if (playersExists(playerAddTA.getText())) {
                 throw new PlayerAlreadyExistsException();
             }
             //OSCAR (add new player)
-            Main.players.push(new Player(playerAddTA.getText(), new File(playerAddTA.getText())));
+            Main.game.addPlayer(playerAddTA.getText(), new File(playerAddTA.getText()));
             if (Main.popup_counter >= 1) {
                 Main.stages.pop().close();
                 Main.popup_counter--;
             }
+            Main.tempBrainFile = null;
             clearErrors();
             Main.stages.peek().show();
-            createPairings();
+            //createPairings();
         } catch (PlayerAlreadyExistsException ex) {
             Main.exceptions.push(ex);
             faultyParamScenario(addButton, ex);
         } catch (WrongNamingException | NoBrainException ex) {
             Main.exceptions.push(ex);
             faultyParamScenario(addButton, ex);
+        } catch (FileNotFoundException ex) {
+            Main.exceptions.push(ex);
+            faultyParamScenario(addButton, ex);
+        } catch (IOException ex) {
+            Main.exceptions.push(ex);
         }
     }
 
@@ -230,17 +227,17 @@ public class Controller implements Initializable {
             Window window = new Stage();
             fc.setTitle("Pick your Fight!");
             ((Stage) window).initStyle(StageStyle.UNDECORATED);
-            Main.worlds.push(new World(fc.showOpenDialog(window)));
-            if (!Main.worlds.peek().world.getName().endsWith(".world")) {
+            File file = fc.showOpenDialog(window);
+            if (!file.getName().endsWith(".world")) {
                 throw new FileExtensionException();
             }
+            Main.game.loadWorld(file);
+            
             clearErrors();
-            createPairings();
-        } catch (FileExtensionException ex) {
+            //createPairings();
+        } catch (Exception ex) {
             Main.exceptions.push(ex);
             faultyParamScenario(worldButton, ex);
-        } catch (NullPointerException ex) {
-            Main.exceptions.push(ex);
         }
         //OSCAR (grammar)
 
@@ -267,7 +264,7 @@ public class Controller implements Initializable {
     @FXML
     public void playGame() {
         try {
-            if (Main.worlds.size() < 1 || Main.players.size() < 2) {
+            if (Main.game.getPlayerNum() < 2) {
                 throw new MissingGameParamsException();
             }
             Stage battle = new Stage();
@@ -285,33 +282,33 @@ public class Controller implements Initializable {
             faultyParamScenario(playButton, new WrongParametersException());
         }
     }
-    
+
     @FXML
     public void showPairings() {
         String redListings = "player 1\n", blackListings = "player 2\n", worldListings = "world\n";
-        for(Match match : Main.matches) {
-            redListings = redListings.concat(match.pair.player1.name + "\n");
-            blackListings = blackListings.concat(match.pair.player2.name + "\n");
-            worldListings = worldListings.concat(match.world.world.getName() + "\n");
+        for (int i = 0; i < Main.game.getPlayerNum() * (Main.game.getPlayerNum() - 1); i++) {
+            //redListings = redListings.concat(match.pair.player1.name + "\n");
+            //blackListings = blackListings.concat(match.pair.player2.name + "\n");
+            //worldListings = worldListings.concat(match.world.world.getName() + "\n");
         }
         redAntLabel.setText(redListings);
         blackAntLabel.setText(blackListings);
         worldLabel.setText(worldListings);
     }
-    
+
     @FXML
     public void quitSimulation() {
         killGame();
         Main.stages.pop().close();
         Main.stages.peek().show();
     }
-    
+
     @FXML
     public void killGame() {
         //OSCAR
         resumeButton.setText("START");
     }
-    
+
     @FXML
     public void pauseGame() {
         //OSCAR
@@ -323,29 +320,29 @@ public class Controller implements Initializable {
             resumeButton.setText("PAUSE");
         }
     }
-    
+
     @FXML
     public void nextMatch() {
         goHome();
         //prepareNextMatch();
         //OSCAR
     }
-    
+
     @FXML
     public void goHomeResults() {
         goHome();
         //OSCAR
     }
-    
+
     @FXML
     public void showScores() {
-        for (Player player : Main.players) {
-            scoreNameLabel.setText(player.name + "\n");
-            scoreNumbLabel.setText(player.score + "\n");
+        for (Player player : Main.game.getPlayers()) {
+            scoreNameLabel.setText(player.getName() + "\n");
+            scoreNumbLabel.setText(player.currentScore() + "\n");
         }
         //OSCAR
     }
-    
+
     @FXML
     public void goHomeVictory() {
         //OSCAR
@@ -408,6 +405,8 @@ public class Controller implements Initializable {
                     label.setText("error: cannot add new player; \n user must enter a String beginning with an alphabetic letter");
                 } else if (exept instanceof NoBrainException) {
                     label.setText("error: cannot add new player; \n user must load an ant brain");
+                } else if (exept instanceof FileNotFoundException) {
+                    label.setText("error: cannot add new player: ant brain must be well formed");
                 }
             } else if (button == brainButton) {
                 //OSCAR (separate between grammatically correct ant brains and wrong extensions)
@@ -420,6 +419,8 @@ public class Controller implements Initializable {
                 label = launcherLabel;
                 if (exept instanceof FileExtensionException) {
                     label.setText("error: user must load a proper .world file");
+                } else if (exept instanceof NullPointerException) {
+                    label.setText("error: user must load a well formed .world file");
                 }
             }
             label.setVisible(true);
@@ -427,8 +428,12 @@ public class Controller implements Initializable {
             Main.exceptions.push(ex);
         }
     }
+
     /**
-     * clears all labels which may contain an un-updated text indicating a non-existent error; separate try catches because they are bound to happen, thus it would revoke every executed statement were it a single try catch.
+     * clears all labels which may contain an un-updated text indicating a
+     * non-existent error; separate try catches because they are bound to
+     * happen, thus it would revoke every executed statement were it a single
+     * try catch.
      */
     private void clearErrors() {
         try {
@@ -455,15 +460,17 @@ public class Controller implements Initializable {
         }
 
     }
+
     /**
      * checks if player already exists in the database
+     *
      * @param potential
-     * @return 
+     * @return
      */
     private boolean playersExists(String potential) {
         try {
-            for (Player player : Main.players) {
-                if (player.name.equals(potential)) {
+            for (Player player : Main.game.getPlayers()) {
+                if (player.getName().equals(potential)) {
                     return true;
                 }
             }
@@ -472,33 +479,34 @@ public class Controller implements Initializable {
         }
         return false;
     }
+
     /**
      * creates a new pair of players for face off for every world map
      */
-    private void createPairings() {
-        try {
-            Main.pairs.clear();
-            Main.matches.clear();
-            for (int i = 0; i < Main.players.size(); i++) {
-                for (int j = 0; j < Main.players.size(); j++) {
-                    if (i != j) {
-                        Main.pairs.push(new Pair(Main.players.get(i), Main.players.get(j)));
-                    }
-                }
-            }
-            for (int i = 0; i < Main.pairs.size(); i++) {
-                for (int j = 0; j < Main.worlds.size(); j++) {
-                    Main.matches.push(new Match(Main.worlds.get(j), Main.pairs.get(i)));
-                }
-            }
-        } catch (NullPointerException | EmptyStackException ex) {
-            Main.exceptions.push(ex);
-        }
-        //System.out.println("pairings: " + Main.pairs.size() + "\nmatches: " + Main.matches.size()); //DEBUGGER
+    /*private void createPairings() {
+    try {
+    Main.pairs.clear();
+    Main.matches.clear();
+    for (int i = 0; i < Main.players.size(); i++) {
+    for (int j = 0; j < Main.players.size(); j++) {
+    if (i != j) {
+    Main.pairs.push(new Pair(Main.players.get(i), Main.players.get(j)));
     }
+    }
+    }
+    for (int i = 0; i < Main.pairs.size(); i++) {
+    for (int j = 0; j < Main.worlds.size(); j++) {
+    Main.matches.push(new Match(Main.worlds.get(j), Main.pairs.get(i)));
+    }
+    }
+    } catch (NullPointerException | EmptyStackException ex) {
+    Main.exceptions.push(ex);
+    }
+    //System.out.println("pairings: " + Main.pairs.size() + "\nmatches: " + Main.matches.size()); //DEBUGGER
+    }*/
 
 
-    /*##############################################################################
+ /*##############################################################################
     #############PRIVATE METHODS#######PRIVATE METHODS#######PRIVATE METHODS########
     ################################################################################
     ################################################################################
@@ -536,6 +544,7 @@ public class Controller implements Initializable {
             super();
         }
     }
+
     /**
      * 'abstract' exception handling all missing parameters of the game
      */
@@ -556,8 +565,9 @@ public class Controller implements Initializable {
             super();
         }
     }
+
     /**
-     * handles invalid text; specifically 
+     * handles invalid text; specifically
      */
     private class NoBrainException extends MissingGameParamsException {
 
@@ -565,8 +575,10 @@ public class Controller implements Initializable {
             super();
         }
     }
+
     /**
-     * if loaded file via file chooser  does not end with a string representing the required extension, this is thrown (and caught & handled)
+     * if loaded file via file chooser does not end with a string representing
+     * the required extension, this is thrown (and caught & handled)
      */
     private class FileExtensionException extends IOException {
 
@@ -574,11 +586,12 @@ public class Controller implements Initializable {
             super();
         }
     }
+
     /**
      * if player name matches another that is already loaded, this is thrown
      */
     private class PlayerAlreadyExistsException extends WrongNamingException {
-        
+
         PlayerAlreadyExistsException() {
             super();
         }
