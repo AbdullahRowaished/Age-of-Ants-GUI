@@ -45,13 +45,12 @@
             <ProgressBar layoutX="80.0" layoutY="20.0" prefHeight="23.0" prefWidth="475.0" progress="0.0" />
          </children>
       </AnchorPane>
-      <Button fx:id="resetButton" alignment="CENTER" layoutX="615.0" layoutY="903.0" mnemonicParsing="false" onAction="#killGame" prefHeight="31.0" prefWidth="96.0" text="STOP" textAlignment="CENTER" wrapText="true" />
-      <Button fx:id="quitsimButton" alignment="CENTER" layoutX="631.0" layoutY="966.0" mnemonicParsing="false" onAction="#quitSimulation" prefHeight="31.0" prefWidth="63.0" text="HOME" textAlignment="CENTER" wrapText="true">
+      <Button fx:id="quitsimButton" alignment="CENTER" layoutX="631.0" layoutY="964.0" mnemonicParsing="false" onAction="#quitSimulation" prefHeight="31.0" prefWidth="63.0" text="HOME" textAlignment="CENTER" wrapText="true">
          <font>
             <Font size="14.0" />
          </font>
       </Button>
-      <Button fx:id="resumeButton" alignment="CENTER" layoutX="615.0" layoutY="837.0" mnemonicParsing="false" onAction="#pauseGame" prefHeight="31.0" prefWidth="96.0" text="START" textAlignment="CENTER" wrapText="true" />
+      <Button fx:id="resumeButton" alignment="CENTER" layoutX="615.0" layoutY="883.0" mnemonicParsing="false" onAction="#startSimulation" prefHeight="31.0" prefWidth="96.0" text="START" textAlignment="CENTER" wrapText="true" />
       <TextArea fx:id="battlefield" layoutX="338.0" layoutY="47.0" prefHeight="650.0" prefWidth="650.0" />
    </children>
 </AnchorPane>

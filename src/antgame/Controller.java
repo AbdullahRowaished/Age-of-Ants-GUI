@@ -28,15 +28,15 @@ import javafx.stage.Window;
  * @author Abdullah Rowaished
  */
 public class Controller implements Initializable {
-
     /**
      * Initialises the controller class (leave it the F**K alone!)
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        Main.controller = this;
     }
     @FXML
-    private Label launcherLabel/*tourney - error messages: illegal number of players; illegal world importation; missing parameters for game to start*/,
+    public Label launcherLabel/*tourney - error messages: illegal number of players; illegal world importation; missing parameters for game to start*/,
             addPlayerLabel/*subtourney - error messages: illegal name of player; illegal ant brain importation; missing parameters for player to be added*/,
             loadBrainLabel/*subtourney - error messages: NONE; used to indicate if a brain is loaded or not, and the file name if loaded*/,
             redAntLabel/*tourney*/,
@@ -46,7 +46,7 @@ public class Controller implements Initializable {
             scoreNumbLabel/*results*/,
             victorLabel/*victory*/;
     @FXML
-    private Button quitButton/*launcher*/,
+    public Button quitButton/*launcher*/,
             homeButton/*tourney*/,
             loadButton/*tourney*/,
             addButton/*subtourney*/,
@@ -63,10 +63,10 @@ public class Controller implements Initializable {
             scoreButton/*results*/,
             victoryHomeButton/*victory*/;
     @FXML
-    private TextField numOfPlayersTA/*tourney*/,
+    public TextField numOfPlayersTA/*tourney*/,
             playerAddTA/*subtourney*/;
     @FXML
-    private TextArea battlefield;
+    public TextArea battlefield;
 
     /**
      * hides the Launcher panel as it opens a new Tourney panel via clicking
@@ -121,7 +121,7 @@ public class Controller implements Initializable {
             }
             Main.load_flag = true;
             loadBrainLabel.setText("brain: " + Main.tempBrainFile.getName());
-            launcherLabel.setText("");
+            clearErrors();
             //System.out.println("try: " + Main.brain_counter); //DEBUGGER
         } catch (FileExtensionException ex) {
             Main.exceptions.push(ex);
@@ -172,7 +172,7 @@ public class Controller implements Initializable {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NumberFormatException | WrongParametersException ex) {
             Main.exceptions.push(ex);
-            faultyParamScenario(loadButton, null);
+            faultyParamScenario(loadButton, ex);
         }
     }
 
@@ -194,7 +194,7 @@ public class Controller implements Initializable {
                 throw new PlayerAlreadyExistsException();
             }
             //OSCAR (add new player)
-            Main.game.addPlayer(playerAddTA.getText(), new File(playerAddTA.getText()));
+            Main.game.addPlayer(playerAddTA.getText(), Main.tempBrainFile);
             if (Main.popup_counter >= 1) {
                 Main.stages.pop().close();
                 Main.popup_counter--;
@@ -202,7 +202,7 @@ public class Controller implements Initializable {
             Main.tempBrainFile = null;
             clearErrors();
             Main.stages.peek().show();
-            //createPairings();
+            createPairings();
         } catch (PlayerAlreadyExistsException ex) {
             Main.exceptions.push(ex);
             faultyParamScenario(addButton, ex);
@@ -213,6 +213,8 @@ public class Controller implements Initializable {
             Main.exceptions.push(ex);
             faultyParamScenario(addButton, ex);
         } catch (IOException ex) {
+            Main.exceptions.push(ex);
+        } catch (Exception ex) {
             Main.exceptions.push(ex);
         }
     }
@@ -232,9 +234,9 @@ public class Controller implements Initializable {
                 throw new FileExtensionException();
             }
             Main.game.loadWorld(file);
-            
+            Main.tempWorldFile = file;
             clearErrors();
-            //createPairings();
+            createPairings();
         } catch (Exception ex) {
             Main.exceptions.push(ex);
             faultyParamScenario(worldButton, ex);
@@ -267,6 +269,9 @@ public class Controller implements Initializable {
             if (Main.game.getPlayerNum() < 2) {
                 throw new MissingGameParamsException();
             }
+            if (Main.tempWorldFile == null) {
+                Main.game.randomiseWorld();
+            }
             Stage battle = new Stage();
             battle.setScene(new Scene((Parent) FXMLLoader.load(getClass().getResource("Battle.fxml"))));
             Main.stages.peek().hide();
@@ -274,22 +279,27 @@ public class Controller implements Initializable {
             battle.show();
             Main.stages.push(battle);
             clearErrors();
-        } catch (WrongParametersException | IOException ex) {
+        } catch (Exception ex) {
             Main.exceptions.push(ex);
             faultyParamScenario(playButton, ex);
-        } catch (NullPointerException ex) {
-            Main.exceptions.push(ex);
-            faultyParamScenario(playButton, new WrongParametersException());
         }
     }
 
     @FXML
     public void showPairings() {
-        String redListings = "player 1\n", blackListings = "player 2\n", worldListings = "world\n";
-        for (int i = 0; i < Main.game.getPlayerNum() * (Main.game.getPlayerNum() - 1); i++) {
-            //redListings = redListings.concat(match.pair.player1.name + "\n");
-            //blackListings = blackListings.concat(match.pair.player2.name + "\n");
-            //worldListings = worldListings.concat(match.world.world.getName() + "\n");
+
+        String redListings = "red ant\n", blackListings = "black ant\n", worldListings = "world\n";
+        int i = 0;
+        for (Player red : Main.redPairing) {
+            redListings += red.getName() + "\n";
+            blackListings += Main.blackPairing.get(i).getName() + "\n";
+            try {
+                worldListings += Main.tempWorldFile.getName() + "\n";
+            } catch (NullPointerException ex) {
+                Main.exceptions.push(ex);
+                worldListings += "randomized\n";
+            }
+            i++;
         }
         redAntLabel.setText(redListings);
         blackAntLabel.setText(blackListings);
@@ -298,26 +308,18 @@ public class Controller implements Initializable {
 
     @FXML
     public void quitSimulation() {
-        killGame();
+        //kill the game
         Main.stages.pop().close();
         Main.stages.peek().show();
     }
 
     @FXML
-    public void killGame() {
-        //OSCAR
-        resumeButton.setText("START");
-    }
-
-    @FXML
-    public void pauseGame() {
-        //OSCAR
-        if (resumeButton.getText().equals("PAUSE")) {
-            resumeButton.setText("RESUME");
-        } else if (resumeButton.getText().equals("RESUME")) {
-            resumeButton.setText("PAUSE");
-        } else if (resumeButton.getText().equals("START")) {
-            resumeButton.setText("PAUSE");
+    public void startSimulation() {
+        try {
+            //OSCAR
+            Main.game.startTournament();
+        } catch (Exception ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -393,9 +395,11 @@ public class Controller implements Initializable {
             } else if (button == playButton) {
                 label = launcherLabel;
                 if (exept instanceof WrongParametersException) {
-                    label.setText("error: user cannot start the game; \n must have at least 2 players and 1 world loaded");
+                    label.setText("error: user cannot start the game; \n must have at least 2 players");
                 } else if (exept instanceof IOException) {
                     label.setText("error: user cannot start the game; \n world file may be missing from directory");
+                } else if (exept instanceof NullPointerException) {
+                    label.setText("warning: custom game world not loaded; \n expect a randomized one");
                 }
             } else if (button == addButton) {
                 label = addPlayerLabel;
@@ -447,11 +451,6 @@ public class Controller implements Initializable {
             Main.exceptions.push(ex);
         }
         try {
-            this.loadBrainLabel.setText("");
-        } catch (NullPointerException ex) {
-            Main.exceptions.push(ex);
-        }
-        try {
             redAntLabel.setText("");
             blackAntLabel.setText("");
             worldLabel.setText("");
@@ -483,30 +482,41 @@ public class Controller implements Initializable {
     /**
      * creates a new pair of players for face off for every world map
      */
-    /*private void createPairings() {
-    try {
-    Main.pairs.clear();
-    Main.matches.clear();
-    for (int i = 0; i < Main.players.size(); i++) {
-    for (int j = 0; j < Main.players.size(); j++) {
-    if (i != j) {
-    Main.pairs.push(new Pair(Main.players.get(i), Main.players.get(j)));
+    private void createPairings() {
+        try {
+            Main.redPairing.clear();
+            Main.blackPairing.clear();
+            for (int i = 0; i < Main.game.getPlayerNum(); i++) {
+                for (int j = 0; j < Main.game.getPlayerNum(); j++) {
+                    if (i != j) {
+                        Main.redPairing.push(Main.game.getPlayers().get(i));
+                        Main.blackPairing.push(Main.game.getPlayers().get(j));
+                    }
+                }
+            }
+        } catch (NullPointerException | EmptyStackException ex) {
+            Main.exceptions.push(ex);
+        }
+        //System.out.println("redPairing: " + Main.pairs.size() + "\nmatches: " + Main.matches.size()); //DEBUGGER
     }
+    
+    class AoAThread extends Thread {
+        AoAThread(){
+            super();
+        }
+        
+        @Override
+        public void run() {
+            try {
+                Main.game.startTournament();
+            } catch (Exception ex) {
+                Main.exceptions.push(ex);
+            }
+        }
     }
-    }
-    for (int i = 0; i < Main.pairs.size(); i++) {
-    for (int j = 0; j < Main.worlds.size(); j++) {
-    Main.matches.push(new Match(Main.worlds.get(j), Main.pairs.get(i)));
-    }
-    }
-    } catch (NullPointerException | EmptyStackException ex) {
-    Main.exceptions.push(ex);
-    }
-    //System.out.println("pairings: " + Main.pairs.size() + "\nmatches: " + Main.matches.size()); //DEBUGGER
-    }*/
 
 
- /*##############################################################################
+    /*##############################################################################
     #############PRIVATE METHODS#######PRIVATE METHODS#######PRIVATE METHODS########
     ################################################################################
     ################################################################################
