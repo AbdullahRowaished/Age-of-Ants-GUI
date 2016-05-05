@@ -9,20 +9,14 @@ package antgame;
  */
  
 
-import java.awt.AWTException;
-import java.awt.Robot;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import java.math.BigInteger;
 
 /**
@@ -75,10 +69,11 @@ public class Game{
      * @param name player name
      * @param f players brain file
      */
-    public void addPlayer(String name, File f) throws IOException
+    public void addPlayer(String name, File f) throws Exception
     {
         AntBrain_Parser p = new AntBrain_Parser(f);
         players.add(new Player(name, p.getBrain1().toArray(new State_Super[p.getBrain1().size()])));
+        numOfPlayers++;
     }
     
     /**
@@ -111,7 +106,7 @@ public class Game{
         currentRound = 0;
         world.placeAnts();
         stats = new Stats();
-        world.printWorld();
+        //world.printWorld();
 
         while (++currentRound!=300000){
             step(); //Step for each round
@@ -121,6 +116,7 @@ public class Game{
                 Thread.sleep(4000);
                 new InputStreamReader(System.in);
             }
+            updateUI();
         }
         
         //Determine the winner and increment scores
@@ -497,7 +493,6 @@ public class Game{
                 if (p1 != p2)
                 {
                     startGame(players.get(p1),players.get(p2));
-
                     //TODO: Add code to update gui display, e.g. gui.updateWorld(world.layout);
                 }
             }
@@ -518,5 +513,9 @@ public class Game{
     public ArrayList<Player> getPlayers()
     {
         return players;
+    }
+
+    private void updateUI() {
+        Main.controller.battlefield.setText(world.printWorld());
     }
 }

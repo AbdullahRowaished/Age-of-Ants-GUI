@@ -24,12 +24,15 @@ public class Main extends Application {
             map_counter/*temporary value to ensure synchronuousy of map count*/;
     public static Stack<Stage> stages/*a stack machine for windows, the latest window gets to be popped off\peeked at from the stack to be viewed, showed, or updated*/;
     public static File
-            //worldFiles/*world files loaded into the game are here NOTE: type of field might change to ArrayList*/,
-            tempBrainFile/*TEMP: ant brain files loaded into the game are here NOTE: this field might not be necassry if consiladed as a field of custom class Player along with playerFiles*/;
-            //playerFiles /*REFACTOR: this does not have any practical uses and shall be replaced with an ArrayList containing Player objects*/;
+            tempWorldFile,
+            tempBrainFile;
+    public static Stack<Player>
+            redPairing,
+            blackPairing;
     public static Stack<Exception> exceptions/*DEBUGGER: could prove useful in handling exceptions; pushes every exception encountered in a try-catch into it*/;
     public static boolean load_flag/*VITAL: indicates if a file is successfully loaded, ant brain or ant world; prevents unintentional overwrites and bugs associated with it*/;
     public static Game game;
+    public static Controller controller;
     
     @Override
     public void start(Stage launcher) {
@@ -53,6 +56,8 @@ public class Main extends Application {
     public static void main(String[] args) {
         stages = new Stack<>();
         exceptions = new Stack<>();
+        redPairing = new Stack<>();
+        blackPairing = new Stack<>();
         popup_counter = 0;
         brain_counter = 0;
         player_counter = 0;
@@ -60,7 +65,6 @@ public class Main extends Application {
         load_flag = false;
         game = new Game();
         launch(args);
-        
     }
     
 }

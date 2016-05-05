@@ -26,8 +26,10 @@ public class AntBrain_Parser {
     /**
      * Parses the brain
      * @param file the file to be parsed
+     * @throws java.io.IOException
+     * @throws java.io.FileNotFoundException
      */
-    public AntBrain_Parser(File file) throws IOException, FileNotFoundException
+    public AntBrain_Parser(File file) throws Exception
     {
         b1 = file;
         brain = new ArrayList();
